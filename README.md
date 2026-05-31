@@ -2,12 +2,24 @@
 
 A full-stack Task Manager built with React + Node.js. Users can register, log in, and manage tasks with priorities, statuses, and due dates.
 
+---
+
 ## Tech Stack
 
 - **Frontend:** React 18, React Router v6, Tailwind CSS, Axios
 - **Backend:** Node.js, Express.js, MongoDB (Mongoose)
 - **Auth:** JWT (jsonwebtoken), bcrypt
 - **Security:** Helmet, CORS, express-rate-limit, Joi validation
+
+---
+
+## Screenshots
+
+![Login Page](screenshots/login.png)
+![Dashboard](screenshots/dashboard.png)
+![Task List](screenshots/tasks.png)
+
+---
 
 ## Local Setup
 
@@ -21,10 +33,7 @@ cd task-manager
 ### 2. Install dependencies
 
 ```bash
-# Install server dependencies
 cd server && npm install
-
-# Install client dependencies
 cd ../client && npm install
 ```
 
@@ -35,12 +44,12 @@ cd server
 cp .env.example .env
 ```
 
-Edit `server/.env` and fill in your values:
+Edit `server/.env` with your values:
 
 ```
 PORT=5000
-MONGO_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/taskmanager
-JWT_SECRET=choose_a_long_random_string
+MONGO_URI=mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/taskmanager?appName=Cluster0
+JWT_SECRET=your_long_random_secret_key
 JWT_EXPIRES_IN=7d
 CLIENT_URL=http://localhost:5173
 ```
@@ -61,17 +70,21 @@ cd client
 npm run dev
 ```
 
-App runs at: `http://localhost:5173`
+Open: `http://localhost:5173`
 
-## Required .env Variables
+---
+
+## Environment Variables
 
 | Variable | Description |
 |---|---|
-| `PORT` | Port the server listens on (default: 5000) |
-| `MONGO_URI` | MongoDB connection string (use MongoDB Atlas free tier) |
-| `JWT_SECRET` | Secret key for signing JWT tokens (make it long and random) |
-| `JWT_EXPIRES_IN` | Token expiry duration (e.g. `7d`) |
-| `CLIENT_URL` | Frontend URL for CORS (e.g. `http://localhost:5173`) |
+| `PORT` | Port the server runs on (default: 5000) |
+| `MONGO_URI` | MongoDB Atlas connection string |
+| `JWT_SECRET` | Secret key for signing JWT tokens |
+| `JWT_EXPIRES_IN` | Token expiry (e.g. `7d`) |
+| `CLIENT_URL` | Frontend URL for CORS |
+
+---
 
 ## API Endpoints
 
@@ -90,6 +103,8 @@ App runs at: `http://localhost:5173`
 | PATCH | `/api/tasks/:id` | Update a task |
 | DELETE | `/api/tasks/:id` | Delete a task |
 
+---
+
 ## Features
 
 - Register and login with JWT authentication
@@ -98,7 +113,7 @@ App runs at: `http://localhost:5173`
 - Filter tasks by status (All / Todo / In-Progress / Done)
 - Priority badges (Low = green, Medium = orange, High = red)
 - Loading skeletons while data loads
-- Toast notifications on task actions
-- Empty state message when no tasks
+- Toast notifications on task create / update / delete
+- Empty state message when no tasks exist
 - Fully responsive (mobile + desktop)
 - Protected routes redirect unauthenticated users to /login
