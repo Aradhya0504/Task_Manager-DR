@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import Button from './Button';
 import { validateTask } from '../utils/validators';
 import { toInputDate } from '../utils/formatDate';
 
@@ -16,7 +15,6 @@ const Modal = ({ isOpen, onClose, onSubmit, task }) => {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
-  // Populate form when editing an existing task
   useEffect(() => {
     if (task) {
       setForm({
@@ -43,11 +41,7 @@ const Modal = ({ isOpen, onClose, onSubmit, task }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validation = validateTask(form);
-    if (Object.keys(validation).length > 0) {
-      setErrors(validation);
-      return;
-    }
-
+    if (Object.keys(validation).length > 0) { setErrors(validation); return; }
     setSubmitting(true);
     try {
       await onSubmit({ ...form, dueDate: form.dueDate || null });
@@ -59,86 +53,91 @@ const Modal = ({ isOpen, onClose, onSubmit, task }) => {
     }
   };
 
+  const inputClass = "w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-gray-50 transition";
+
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg w-full max-w-md shadow-xl">
-        <div className="flex items-center justify-between px-5 py-4 border-b">
-          <h2 className="font-semibold text-gray-800">{task ? 'Edit Task' : 'New Task'}</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
+        {/* Modal Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <div>
+            <h2 className="font-bold text-gray-800 text-base">{task ? 'Edit Task' : 'Create New Task'}</h2>
+            <p className="text-xs text-gray-400 mt-0.5">{task ? 'Update task details' : 'Fill in the details below'}</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-lg"
+          >
+            &times;
+          </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-5 py-4 space-y-4">
+        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Title *</label>
             <input
               type="text"
               name="title"
               value={form.title}
               onChange={handleChange}
-              placeholder="Task title"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="What needs to be done?"
+              className={inputClass}
             />
-            {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
+            {errors.title && <p className="text-red-500 text-xs mt-1.5">{errors.title}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
             <textarea
               name="description"
               value={form.description}
               onChange={handleChange}
-              placeholder="Optional description"
+              placeholder="Add more details (optional)"
               rows={3}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className={`${inputClass} resize-none`}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-              <select
-                name="priority"
-                value={form.priority}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Priority</label>
+              <select name="priority" value={form.priority} onChange={handleChange} className={inputClass}>
+                <option value="low">🟢 Low</option>
+                <option value="medium">🟠 Medium</option>
+                <option value="high">🔴 High</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-              <select
-                name="status"
-                value={form.status}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="todo">To Do</option>
-                <option value="in-progress">In Progress</option>
-                <option value="done">Done</option>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
+              <select name="status" value={form.status} onChange={handleChange} className={inputClass}>
+                <option value="todo">📌 To Do</option>
+                <option value="in-progress">🔄 In Progress</option>
+                <option value="done">✅ Done</option>
               </select>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
-            <input
-              type="date"
-              name="dueDate"
-              value={form.dueDate}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Due Date</label>
+            <input type="date" name="dueDate" value={form.dueDate} onChange={handleChange} className={inputClass} />
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button variant="ghost" onClick={onClose} type="button">Cancel</Button>
-            <Button type="submit" disabled={submitting}>
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="px-5 py-2 text-sm font-medium text-white bg-indigo-700 hover:bg-indigo-800 rounded-xl transition-all disabled:opacity-50 shadow-sm"
+            >
               {submitting ? 'Saving...' : task ? 'Update Task' : 'Create Task'}
-            </Button>
+            </button>
           </div>
         </form>
       </div>

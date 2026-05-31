@@ -14,13 +14,22 @@ const Nav = () => {
   if (!user) return null;
 
   const linkClass = ({ isActive }) =>
-    `text-sm font-medium transition-colors ${isActive ? 'text-blue-600' : 'text-gray-500 hover:text-gray-800'}`;
+    `text-sm font-medium px-3 py-1.5 rounded-md transition-all ${
+      isActive
+        ? 'bg-white text-indigo-700 shadow-sm'
+        : 'text-indigo-100 hover:text-white hover:bg-indigo-600'
+    }`;
 
   return (
-    <header className="border-b border-gray-200 bg-white">
-      <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-        <span className="font-bold text-gray-800">TaskManager</span>
-        <nav className="flex gap-5">
+    <header className="bg-indigo-700 shadow-md">
+      <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 bg-white rounded-lg flex items-center justify-center">
+            <span className="text-indigo-700 font-bold text-xs">TM</span>
+          </div>
+          <span className="font-bold text-white text-lg tracking-tight">TaskManager</span>
+        </div>
+        <nav className="flex gap-1">
           <NavLink to="/dashboard" className={linkClass}>Dashboard</NavLink>
           <NavLink to="/tasks" className={linkClass}>Tasks</NavLink>
           <NavLink to="/profile" className={linkClass}>Profile</NavLink>
@@ -40,18 +49,9 @@ const App = () => {
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route
-                path="/dashboard"
-                element={<ProtectedRoute><Dashboard /></ProtectedRoute>}
-              />
-              <Route
-                path="/tasks"
-                element={<ProtectedRoute><TaskList /></ProtectedRoute>}
-              />
-              <Route
-                path="/profile"
-                element={<ProtectedRoute><Profile /></ProtectedRoute>}
-              />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/tasks" element={<ProtectedRoute><TaskList /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
