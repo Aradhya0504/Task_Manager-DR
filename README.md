@@ -17,8 +17,6 @@ A full-stack Task Manager built with React + Node.js. Users can register, log in
 
 ![Login Page](screenshots/login.png)
 ![Dashboard](screenshots/dashboard.png)
-![Task List](screenshots/tasks.png)
-
 ---
 
 ## Local Setup
