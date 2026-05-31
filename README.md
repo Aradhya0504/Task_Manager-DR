@@ -2,6 +2,8 @@
 
 A full-stack Task Manager built with React + Node.js. Users can register, log in, and manage tasks with priorities, statuses, and due dates.
 
+**Live Demo:** [Frontend](https://task-manager-dr.vercel.app) • [Backend API](https://task-manager-server-nu50.onrender.com/api/health)
+
 ---
 
 ## Tech Stack
