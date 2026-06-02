@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import TaskList from './pages/TaskList';
 import Profile from './pages/Profile';
+import Schedule from './pages/Schedule';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const { user } = useAuthContext();
@@ -25,10 +26,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     <>
       {/* Mobile overlay */}
       {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 z-20 lg:hidden"
-          onClick={onClose}
-        />
+        <div className="fixed inset-0 bg-black/40 z-20 lg:hidden" onClick={onClose} />
       )}
 
       {/* Sidebar */}
@@ -45,18 +43,12 @@ const Sidebar = ({ isOpen, onClose }) => {
             <p className="font-bold text-gray-800 text-sm leading-tight">TaskManager</p>
             <p className="text-xs text-gray-400">Manage your tasks</p>
           </div>
-          {/* Close button on mobile */}
-          <button
-            onClick={onClose}
-            className="ml-auto text-gray-400 hover:text-gray-600 lg:hidden"
-          >
-            ✕
-          </button>
+          <button onClick={onClose} className="ml-auto text-gray-400 hover:text-gray-600 lg:hidden">✕</button>
         </div>
 
         {/* Nav Links */}
-        <nav className="flex-1 px-3 py-4 space-y-1">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 mb-2">Menu</p>
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 mb-2">Main</p>
 
           <NavLink to="/dashboard" className={linkClass} onClick={onClose}>
             <span className="text-base">📊</span>
@@ -67,6 +59,19 @@ const Sidebar = ({ isOpen, onClose }) => {
             <span className="text-base">✅</span>
             My Tasks
           </NavLink>
+
+          <div className="pt-3 pb-1">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 mb-2">Planning</p>
+          </div>
+
+          <NavLink to="/schedule" className={linkClass} onClick={onClose}>
+            <span className="text-base">🗓️</span>
+            Schedule
+          </NavLink>
+
+          <div className="pt-3 pb-1">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 mb-2">Account</p>
+          </div>
 
           <NavLink to="/profile" className={linkClass} onClick={onClose}>
             <span className="text-base">👤</span>
@@ -101,7 +106,6 @@ const Layout = ({ children }) => {
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      {/* Main content */}
       <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
         {/* Mobile top bar */}
         <header className="lg:hidden bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
@@ -135,6 +139,7 @@ const App = () => {
               <Route path="/register" element={<Register />} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/tasks" element={<ProtectedRoute><TaskList /></ProtectedRoute>} />
+              <Route path="/schedule" element={<ProtectedRoute><Schedule /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
