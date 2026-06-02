@@ -5,6 +5,7 @@ import { ToastProvider } from './components/Toast';
 import ProtectedRoute from './components/ProtectedRoute';
 import api from './services/api';
 import { getDueReminder } from './utils/formatDate';
+import useReminders from './hooks/useReminders';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -116,6 +117,9 @@ const Sidebar = ({ isOpen, onClose }) => {
 const Layout = ({ children }) => {
   const { user } = useAuthContext();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const remindersEnabled = localStorage.getItem('reminders_enabled') === 'true';
+  useReminders(!!user && remindersEnabled);
 
   if (!user) return <>{children}</>;
 
