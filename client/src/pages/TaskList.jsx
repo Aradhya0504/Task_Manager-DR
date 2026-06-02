@@ -5,6 +5,27 @@ import Modal from '../components/Modal';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import { useToast } from '../components/Toast';
 import useDebounce from '../hooks/useDebounce';
+import { formatDate } from '../utils/formatDate';
+
+const exportToCSV = (tasks) => {
+  const headers = ['Title', 'Description', 'Status', 'Priority', 'Due Date', 'Created At'];
+  const rows = tasks.map((t) => [
+    `"${t.title}"`,
+    `"${t.description || ''}"`,
+    t.status,
+    t.priority,
+    t.dueDate ? formatDate(t.dueDate) : 'No due date',
+    formatDate(t.createdAt),
+  ]);
+  const csv = [headers, ...rows].map((r) => r.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'my-tasks.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+};
 
 const FILTERS = [
   { value: 'all', label: 'All' },
@@ -86,12 +107,23 @@ const TaskList = () => {
           <h1 className="text-2xl font-bold text-gray-800">My Tasks</h1>
           <p className="text-sm text-gray-500 mt-0.5">{tasks.length} task{tasks.length !== 1 ? 's' : ''} total</p>
         </div>
-        <button
-          onClick={openCreate}
-          className="bg-indigo-700 hover:bg-indigo-800 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5 active:scale-95"
-        >
-          + Add Task
-        </button>
+        <div className="flex items-center gap-2">
+          {tasks.length > 0 && (
+            <button
+              onClick={() => exportToCSV(tasks)}
+              className="bg-white border border-gray-200 text-gray-600 text-sm font-medium px-3 py-2.5 rounded-xl transition-all hover:bg-gray-50 flex items-center gap-1.5 shadow-sm"
+              title="Export as CSV"
+            >
+              ⬇ Export
+            </button>
+          )}
+          <button
+            onClick={openCreate}
+            className="bg-indigo-700 hover:bg-indigo-800 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-1.5 active:scale-95"
+          >
+            + Add Task
+          </button>
+        </div>
       </div>
 
       {/* Progress bar */}

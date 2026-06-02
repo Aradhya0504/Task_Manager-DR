@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import Badge from './Badge';
-import { formatDate } from '../utils/formatDate';
+import { formatDate, getDueReminder, timeAgo } from '../utils/formatDate';
 
 const priorityBorder = {
   low: 'border-l-green-400',
@@ -8,18 +8,13 @@ const priorityBorder = {
   high: 'border-l-red-500',
 };
 
-const isOverdue = (dueDate, status) => {
-  if (!dueDate || status === 'done') return false;
-  return new Date(dueDate) < new Date();
-};
-
 const TaskCard = memo(({ task, onEdit, onDelete, onToggleDone }) => {
-  const overdue = isOverdue(task.dueDate, task.status);
+  const reminder = getDueReminder(task.dueDate, task.status);
 
   return (
     <div className={`border-l-4 ${priorityBorder[task.priority]} bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-all duration-200 group`}>
       <div className="flex items-start gap-3">
-        {/* Checkbox to mark done */}
+        {/* Checkbox */}
         <button
           onClick={() => onToggleDone(task)}
           className={`mt-0.5 w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all duration-200 ${
@@ -46,7 +41,7 @@ const TaskCard = memo(({ task, onEdit, onDelete, onToggleDone }) => {
               )}
             </div>
 
-            {/* Action buttons - visible on hover */}
+            {/* Action buttons on hover */}
             <div className="flex gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
               <button
                 onClick={() => onEdit(task)}
@@ -63,13 +58,36 @@ const TaskCard = memo(({ task, onEdit, onDelete, onToggleDone }) => {
             </div>
           </div>
 
+          {/* Badges + Due reminder */}
           <div className="flex flex-wrap items-center gap-2 mt-2.5">
             <Badge type="priority" value={task.priority} />
             <Badge type="status" value={task.status} />
-            {task.dueDate && (
-              <span className={`text-xs flex items-center gap-1 font-medium ${overdue ? 'text-red-500' : 'text-gray-400'}`}>
-                {overdue ? '⚠ Overdue:' : '📅'} {formatDate(task.dueDate)}
+
+            {/* Due date reminder badge */}
+            {reminder && (
+              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${reminder.color}`}>
+                ⏰ {reminder.label}
               </span>
+            )}
+
+            {/* Normal due date if no reminder */}
+            {task.dueDate && !reminder && (
+              <span className="text-xs text-gray-400">📅 {formatDate(task.dueDate)}</span>
+            )}
+          </div>
+
+          {/* Activity log */}
+          <div className="flex items-center gap-3 mt-2.5 pt-2.5 border-t border-gray-50">
+            <span className="text-xs text-gray-400">
+              Created {timeAgo(task.createdAt)}
+            </span>
+            {task.createdAt !== task.updatedAt && (
+              <>
+                <span className="text-gray-200">•</span>
+                <span className="text-xs text-gray-400">
+                  Updated {timeAgo(task.updatedAt)}
+                </span>
+              </>
             )}
           </div>
         </div>

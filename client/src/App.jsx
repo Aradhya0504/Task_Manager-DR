@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, NavLink } from 'react-router-dom';
 import { AuthProvider, useAuthContext } from './context/AuthContext';
 import { ToastProvider } from './components/Toast';
 import ProtectedRoute from './components/ProtectedRoute';
+import api from './services/api';
+import { getDueReminder } from './utils/formatDate';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -13,6 +15,16 @@ import Schedule from './pages/Schedule';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const { user } = useAuthContext();
+  const [alertCount, setAlertCount] = useState(0);
+
+  useEffect(() => {
+    if (!user) return;
+    api.get('/tasks').then((res) => {
+      const count = res.data.filter((t) => getDueReminder(t.dueDate, t.status)).length;
+      setAlertCount(count);
+    }).catch(() => {});
+  }, [user]);
+
   if (!user) return null;
 
   const linkClass = ({ isActive }) =>
@@ -58,6 +70,11 @@ const Sidebar = ({ isOpen, onClose }) => {
           <NavLink to="/tasks" className={linkClass} onClick={onClose}>
             <span className="text-base">✅</span>
             My Tasks
+            {alertCount > 0 && (
+              <span className="ml-auto bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                {alertCount > 9 ? '9+' : alertCount}
+              </span>
+            )}
           </NavLink>
 
           <div className="pt-3 pb-1">
